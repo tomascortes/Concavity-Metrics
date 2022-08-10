@@ -26,8 +26,7 @@ if __name__ == "__main__":
     big_dist, small_dist, big_dist_time, small_dist_time =  get_bigger_distance(start, finish, f_x)
     print("Bigger distance: {} at {}".format(big_dist, big_dist_time))
     print("Smallest distance: {} at {}".format(small_dist, small_dist_time))
-    # Second derivative
-    get_numerical_second_derivative(np.array(time), np.array(curve))
+    
 
     
     ## Ploting funcionts
