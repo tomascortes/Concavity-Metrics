@@ -8,8 +8,8 @@ def plot_line(points_list, label=None, color=None):
 
 def plot_three_points(first, middle, last, labels=False, color=None):
     if labels:
-        plot_line([first, middle], label="first to middle", color=color)
-        plot_line([middle, last], label="middle to last", color=color)
+        plot_line([first, middle], label=labels, color=color)
+        plot_line([middle, last], label=labels, color=color)
     else:
         plot_line([first, middle], color=color)
         plot_line([middle, last], color=color)

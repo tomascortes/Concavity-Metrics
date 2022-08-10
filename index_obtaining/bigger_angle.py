@@ -5,7 +5,7 @@ def get_angle(first, middle, last):
     ang = math.degrees(math.atan2(last[1]-middle[1], last[0]-middle[0]) - math.atan2(first[1]-middle[1], first[0]-middle[0]))
     return ang + 360 if ang < 0 else ang
 
-def get_bigger_angle(start,finish, dict_curve) -> tuple:
+def get_bigger_angle(start,finish, dict_curve):
     max_angle = -1
     max_angle_time = 0
     min_angle = 361
