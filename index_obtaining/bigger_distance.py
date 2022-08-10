@@ -14,9 +14,6 @@ def get_bigger_distance(start,finish, dict_curve) -> tuple:
     direction = np.array([start[0] - finish[0], start[1]-finish[1]])
     # Normilize de direction
     direction = direction / np.linalg.norm(direction)
-    start = np.array([start[0], start[1]])
-    finish = np.array([finish[0], finish[1]])
-    vectorized_line = lambda t: start + t*direction
 
     big_dist = -inf 
     small_dist = inf
@@ -38,7 +35,7 @@ def get_bigger_distance(start,finish, dict_curve) -> tuple:
             small_dist = dist
             small_dist_time = time
 
-    #Normilize the distances
-    big_dist = 100 * big_dist / np.linalg.norm(finish - start)
-    small_dist = 100 * small_dist / np.linalg.norm(finish - start)
+    #Normilize the distances to percentage of the total distance
+    big_dist = 100 * big_dist / math.sqrt((finish[0] - start[0])**2 + (finish[1] - start[1])**2)
+    small_dist = 100 * small_dist / math.sqrt((finish[0] - start[0])**2 + (finish[1] - start[1])**2)
     return big_dist, small_dist, big_dist_time, small_dist_time
