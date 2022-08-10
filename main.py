@@ -21,7 +21,7 @@ if __name__ == "__main__":
     
     ## Ploting funcionts
     #Basic line
-    
+    plot_line([start, finish], label="first to finish", color="blue")
 
     # Lines based on middle, quitniles
     # plot_quintiles_lines(start, finish, f_x)
