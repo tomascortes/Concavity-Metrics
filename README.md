@@ -1,6 +1,7 @@
 ## Concavity Metrics
 Repository to explore metrics to compare and mesure concavity in real data
 
+I asumed that the x axe will always be time. The code is made in a way that any timescale works. 
 
 # Bigger distance between de curve and the start-finish line
 The bigger distance between the curve and the start-finish line for each side. Normilized so its in proportion to the length of the start-finish line
