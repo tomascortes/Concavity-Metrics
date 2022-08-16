@@ -1,55 +1,102 @@
 # External libraries
 from matplotlib import pyplot as plt
 import numpy as np
+import sys
 
 # Internal libraries
-from data_manage.read_data import read_file, path_selector
-from data_manage.output_data import create_excel
-from ploting_functions.ploting_functions import plot_line, plot_lines_to_middle, plot_quintiles_lines, plot_three_points
+from data_manage.read_data import read_file, path_selector, get_verbose
+from data_manage.output_data import update_excel
+from ploting_functions.ploting_functions import plot_line, plot_lines_to_middle, plot_three_points
 from index_obtaining.bigger_angle import get_bigger_angle, get_angle
-from index_obtaining.bigger_distance import get_bigger_distance
-from index_obtaining.numeric_derivate import get_numerical_second_derivative
+from index_obtaining.bigger_distance import get_bigger_distance, get_distance
 from index_obtaining.area import get_areas, get_triangle_area
 
 if __name__ == "__main__":
     #Code to select the path 
     ex_path = path_selector()
-    time, curve = read_file(path=ex_path, work_sheet="p1")
+    time, curve, start_x, finish_x = read_file(path=ex_path)
+    if get_verbose():
+        verbose = True
+    else:
+        verbose = input("Do you want to see the plot? (y/n) ")
+        verbose = verbose == "y"
     f_x = dict(zip([round(x, 2) for x in time], curve))
 
-    start = np.array([0.37, 9.68])
-    finish = np.array([1.29, 0.56])
+    start = np.array([start_x, f_x[start_x]])
+    finish = np.array([finish_x, f_x[finish_x]])
     
     ### Indexes ###
-    
+    best_distance_index = {}
+    ## Pivot on bigger distance to the start-finish line ##
     # Distance
     big_dist, big_dist_norm,  big_dist_time =  get_bigger_distance(start, finish, f_x)
-    print("Bigger distance: {} at {}".format(big_dist, big_dist_time))
+    best_distance_index["bigger distance"] = big_dist_time
+    best_distance_index["bigger distance norm"] = big_dist_norm
+    best_distance_index["bigger distance time"] = big_dist_time
+    distance_point = np.array([big_dist_time, f_x[big_dist_time]])
+
     #Angle in bigger distance
-    max_ang = get_angle(start, [big_dist_time, f_x[big_dist_time]], finish)
-    #Angle in smaller distance
-    # area
+    max_ang = get_angle(start, distance_point, finish)
+    best_distance_index["angle"] = max_ang
+
+    # Area
     upper_area, downer_area = get_areas(start, finish, f_x)
-    print("angle: {} at {}".format(max_ang, big_dist_time))
-    print("Upper area: {}".format(upper_area))
-    print("Downer area: {}".format(downer_area))
+    best_distance_index["upper area"] = upper_area
+    best_distance_index["downer area"] = downer_area
+    best_distance_index["triangle area"] = get_triangle_area(
+        start, 
+        distance_point, 
+        finish)
+    # slopes
+    best_distance_index["slope 1"] = (distance_point[1] - start[1])/(distance_point[0] - start[0])
+    best_distance_index["slope 2"] = (finish[1] - distance_point[1])/(finish[0] - distance_point[0])
 
+    ## Pivot on middle values of the data ##
+    middle_distance_index = {}
+    mid_time = round((start[0] + finish[0])/2, 2)
+    mid_point = np.array([mid_time, f_x[mid_time]])
+
+    # Distance
+    middle_distance_index["distance"] = get_distance(start, finish, mid_point)
     
-    ## Ploting funcionts
-    #Basic line
-    plot_line([start, finish], label="start to finish", color="orange")
-    
-    plot_three_points(start, [big_dist_time, f_x[big_dist_time]], finish, labels="Big distance", color="red")
-    plt.plot(big_dist_time, f_x[big_dist_time], marker="o", markersize=5,  color="red")
+    # Angle in middle
+    middle_distance_index["angle"] = get_angle(
+        first=start, 
+        middle=mid_point, 
+        last=finish)
 
-    # Lines based on middle, quitniles
-    # plot_quintiles_lines(start, finish, f_x)
-    # plot_lines_to_middle(start, finish, f_x)
+    # Triangle Area in middle
+    middle_distance_index["triangle area"] = get_triangle_area(start, mid_point, finish)
+    middle_distance_index["slope 1"] = (mid_point[1] - start[1])/(mid_point[0] - start[0])
+    middle_distance_index["slope 2"] = (finish[1] - mid_point[1])/(finish[0] - mid_point[0])
 
+    update_excel(ex_path, best_distance_index, middle_distance_index)
 
-    #Basic graph
-    plt.plot(time, curve)
-    plt.axis([0, time[-1], 0, max(curve)+2])
-    plt.legend()
-    plt.show()
+    if verbose:
+        # Print results big distance
+        print("Bigger distance: {} at {}".format(big_dist, big_dist_time))
+        print("angle: {} at {}".format(max_ang, big_dist_time))
+        print("Upper area: {}".format(upper_area))
+        print("Downer area: {}".format(downer_area))
+        print("Triangle area: {}".format(best_distance_index["triangle area"]))
+
+        print("-"*20)
+        # Print results middle distance
+        print("Middle distance: {} at {}".format(middle_distance_index["distance"], mid_time))
+        print("angle: {} at {}".format(middle_distance_index["angle"], mid_time))
+        print("Triangle area: {}".format(middle_distance_index["triangle area"]))
+        print("Slope 1: {}".format(middle_distance_index["slope 1"]))
+        print("Slope 2: {}".format(middle_distance_index["slope 2"]))
+
+        ## Ploting funcionts
+        plot_line([start, finish], label="start to finish", color="orange")
+        plot_three_points(start, [big_dist_time, f_x[big_dist_time]], finish, labels="Big distance", color="red")
+        plt.plot(big_dist_time, f_x[big_dist_time], marker="o", markersize=5,  color="red", label="Pivot big distance")
+        plt.plot(mid_time, f_x[mid_time], marker="o", markersize=5,  color="blue", label="Middle")
+
+        #Basic graph
+        plt.plot(time, curve)
+        plt.axis([0, time[-1], 0, max(curve)+2])
+        plt.legend()
+        plt.show()
     

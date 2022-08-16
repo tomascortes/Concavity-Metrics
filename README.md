@@ -20,3 +20,13 @@ If its searched just the bigger angle, gives values next to the start or finish 
 
 # Area upper and below the start-finish line
 Get the area below and on top of the curve. Its good comparing curves with the same time intervals
+
+
+Important things
+- A column is the x axis
+- B column is the y axis
+- data for both stats on the row 2
+- cell C1 is the start of the x axis
+- cell D1 is the finish of the x axis
+- needs to be the first worksheet
+- you need to save the changes in the excel before geting the data

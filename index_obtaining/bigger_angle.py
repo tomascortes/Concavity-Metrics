@@ -1,11 +1,17 @@
 import math
+import numpy as np
 
 #Get the points in the curve with the bigger and smaller angle
 def get_angle(first, middle, last):
-    ang = math.degrees(math.atan2(last[1]-middle[1], last[0]-middle[0]) - math.atan2(first[1]-middle[1], first[0]-middle[0]))
-    return ang + 360 if ang < 0 else ang
+    ba = first - middle
+    bc = last - middle
+
+    cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
+    angle = np.arccos(cosine_angle)
+    return np.degrees(angle)
 
 def get_bigger_angle(start,finish, dict_curve):
+    """Not usefull"""
     max_angle = -1
     max_angle_time = 0
     min_angle = 361

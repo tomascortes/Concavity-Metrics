@@ -26,4 +26,4 @@ def get_areas(start,finish, dict_curve) -> tuple:
 
 def get_triangle_area(a,b,c) -> float:
     """Return the area of a triangle with sides a,b,c"""
-    return abs(a*(b+c)-b*c)/2
+    return 1/2*(a[0]*(b[1] - c[1]) + b[0]*(c[1] - a[1]) + c[0]*(a[1] - b[1]))
