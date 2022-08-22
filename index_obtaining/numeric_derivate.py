@@ -24,10 +24,4 @@ def get_numerical_second_derivative(x, y):
     plt.show()
 
 
-if __name__ == "__main__":
-    x = np.array([x for x in range(200)])
-    y = np.array([x*x for x in range(100)] + [-x*x for x in range(100)])
-    y2 = np.array([3*x**2 for x in range(100)] + [-3*x**2 for x in range(100)])
-    get_numerical_second_derivative(x, y)
-    get_numerical_second_derivative(x, y2)
 

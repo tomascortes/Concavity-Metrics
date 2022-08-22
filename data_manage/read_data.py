@@ -78,5 +78,4 @@ def get_verbose() -> bool:
         return sys.argv[1] == "p"
     return False
 
-if __name__ == "__main__":
-    print("Executing data_manage")
+
