@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 # External libraries
 from matplotlib import pyplot as plt
 import numpy as np
+import math
 import sys
 
 # Internal libraries
@@ -31,9 +33,11 @@ if __name__ == "__main__":
     # Distance
     big_dist, big_dist_norm,  big_dist_time =  get_bigger_distance(start, finish, f_x)
     best_distance_index["bigger distance"] = big_dist_time
-    best_distance_index["bigger distance norm"] = big_dist_norm
+    best_distance_index["bigger distance norm (%)"] = big_dist_norm
     best_distance_index["bigger distance time"] = big_dist_time
+    best_distance_index["% time before pivot"] = 100*(big_dist_time - start[0])/(finish[0] - start[0])
     distance_point = np.array([big_dist_time, f_x[big_dist_time]])
+
 
     #Angle in bigger distance
     max_ang = get_angle(start, distance_point, finish)
@@ -48,8 +52,9 @@ if __name__ == "__main__":
         distance_point, 
         finish)
     # slopes
-    best_distance_index["slope 1"] = (distance_point[1] - start[1])/(distance_point[0] - start[0])
-    best_distance_index["slope 2"] = (finish[1] - distance_point[1])/(finish[0] - distance_point[0])
+    best_distance_index["slope start-pivot"] = (distance_point[1] - start[1])/(distance_point[0] - start[0])
+    best_distance_index["slope pivot-finish"] = (finish[1] - distance_point[1])/(finish[0] - distance_point[0])
+    best_distance_index["slope start-finish"] = (finish[1] - start[1])/(finish[0] - start[0])
 
     ## Pivot on middle values of the data ##
     middle_distance_index = {}
@@ -58,7 +63,10 @@ if __name__ == "__main__":
 
     # Distance
     middle_distance_index["distance"] = get_distance(start, finish, mid_point)
-    
+    middle_distance_index["distance norm (%)"] = 100*get_distance(start, finish, mid_point)/math.sqrt((finish[0] - start[0])**2 + (finish[1] - start[1])**2)
+    middle_distance_index["distance time"] = mid_time
+    middle_distance_index["% time before pivot"] = 100 * (mid_time - start[0]) / (finish[0] - start[0])
+
     # Angle in middle
     middle_distance_index["angle"] = get_angle(
         first=start, 
@@ -67,8 +75,8 @@ if __name__ == "__main__":
 
     # Triangle Area in middle
     middle_distance_index["triangle area"] = get_triangle_area(start, mid_point, finish)
-    middle_distance_index["slope 1"] = (mid_point[1] - start[1])/(mid_point[0] - start[0])
-    middle_distance_index["slope 2"] = (finish[1] - mid_point[1])/(finish[0] - mid_point[0])
+    middle_distance_index["slope start-pivot"] = (mid_point[1] - start[1])/(mid_point[0] - start[0])
+    middle_distance_index["slope pivot-finish"] = (finish[1] - mid_point[1])/(finish[0] - mid_point[0])
 
     update_excel(ex_path, best_distance_index, middle_distance_index)
 
@@ -85,8 +93,8 @@ if __name__ == "__main__":
         print("Middle distance: {} at {}".format(middle_distance_index["distance"], mid_time))
         print("angle: {} at {}".format(middle_distance_index["angle"], mid_time))
         print("Triangle area: {}".format(middle_distance_index["triangle area"]))
-        print("Slope 1: {}".format(middle_distance_index["slope 1"]))
-        print("Slope 2: {}".format(middle_distance_index["slope 2"]))
+        print("Slope 1: {}".format(middle_distance_index["slope start-pivot"]))
+        print("Slope 2: {}".format(middle_distance_index["slope pivot-finish"]))
 
         ## Ploting funcionts
         plot_line([start, finish], label="start to finish", color="orange")

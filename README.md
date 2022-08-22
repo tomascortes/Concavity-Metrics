@@ -30,3 +30,8 @@ Important things
 - cell D1 is the finish of the x axis
 - needs to be the first worksheet
 - you need to save the changes in the excel before geting the data
+
+TO DO
+añadir pendiente de inicio a fin
+añadir acronimos a cada dato
+añadir % de tiempo antes del pivote 
